@@ -11,6 +11,9 @@ connectDB();
 
 const app = express();
 
+app.use(express.json());
+//that's allows to send form data
+app.use(express.urlencoded({extended: true}));
 app.use('/api/users', UserRoutes);
 
 app.get('/', (req,res)=>{
