@@ -1,12 +1,24 @@
 import asyncHandler from "express-async-handler"
-
+import generateToken from "../utils/generateToken.js"
 import userModel from "../models/userModel.js"
 //@Desc Auth user/set token 
 //route POST /api/users/auth
 //@acces Public
 const AuthUser = asyncHandler(async(req,res)=>{
-    
-    res.status(200).json({message:"Auth User"})
+    // generate the moddleware tha validate the token created
+    const {email, password} = req.body;
+    const user = await userModel.findOne({email});
+    if(user && (await user.matchPassword(password))){
+        generateToken(res,user._id);
+        res.status(201).json({
+            _id : user._id,
+            name : user.name,
+            email: user.email
+        })
+    } else{
+        res.status(400);
+        throw new Error("Invalid Email or password")
+    }
 })
 
 //@Desc Register a new user
@@ -21,6 +33,7 @@ const registerUser = asyncHandler(async(req,res)=>{
     }
     const user = await userModel.create({name,email,password});
     if(user){
+        generateToken(res,user._id);
         res.status(201).json({
             _id : user._id,
             name : user.name,
@@ -36,7 +49,11 @@ const registerUser = asyncHandler(async(req,res)=>{
 //route POST /api/users/logout
 //@acces Public
 const logoutUser = asyncHandler(async(req,res)=>{
-    res.status(200).json({message:"Log Out User"})
+    res.cookie('jwt', '',{
+        httpOnly:true,
+        expires: new Date(0)
+    })
+    res.status(200).json({message:"User Logged Out"})
 })
 
 //@Desc get user profile
