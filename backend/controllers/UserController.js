@@ -66,7 +66,32 @@ const getUserProfile = asyncHandler(async(req,res)=>{
 //@Desc updet user profile
 //route POST /api/users/profile
 //@acces private
+//peut etre un probleme
 const updateUserProfile = asyncHandler(async(req,res)=>{
+    if (!req.user) {
+        res.status(401);
+        throw new Error("Not authorized, user not found");
+    }
+//
+    const user = await userModel.findById(req.user._id);
+    if(user){
+        user.name = req.body.name || user.name;
+        user.email = req.body.email || user.email;
+        if(req.body.password){
+            user.password = req.body.password;
+        }
+        const updatedUser = await user.save();
+        res.status(200).json({
+            _id: updatedUser._id,
+            name: updatedUser.name,
+            email: updatedUser.email
+        })
+    } else{
+        res.status(401);
+        throw new Error("")
+
+    }
+
     res.status(200).json({message:"Update User Profile"})
 })
 export {
