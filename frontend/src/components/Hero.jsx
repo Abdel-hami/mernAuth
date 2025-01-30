@@ -13,16 +13,16 @@ const Hero = () => {
                         Bootstrap library
                     </p>
                     <div className='d-flex'>
-                        <LinkContainer to='/login'>
-                            <Button variant='primary' className='me-3'>
+                        {/* <LinkContainer to='/login'> */}
+                            <Button variant='primary' href='/login' className='me-3'>
                                 Sign In
                             </Button>
-                        </LinkContainer>
-                        <LinkContainer to='/register'>
-                            <Button variant='secondary' >
+                        {/* </LinkContainer> */}
+                        {/* <LinkContainer to='/register'> */}
+                            <Button variant='secondary' href='/register'>
                                 Sign Up
                             </Button>
-                        </LinkContainer>
+                        {/* </LinkContainer> */}
                     </div>
                 </Card>
             </Container>
